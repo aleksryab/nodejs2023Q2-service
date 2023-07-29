@@ -4,11 +4,12 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserStorage } from './storage/user.storage';
 import { UserErrorMessages } from './constants';
-import { omitObjectProps } from '../utils/omitObjectProps';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -18,19 +19,21 @@ export class UserService {
     const existedUser = this.userStorage.getByLogin(createUserDto.login);
     if (existedUser) throw new ConflictException(UserErrorMessages.LoginExists);
 
-    const user = this.userStorage.create(createUserDto);
-    return omitObjectProps(user, 'password');
+    const newUser = new UserEntity(createUserDto);
+    this.userStorage.add(newUser);
+
+    return newUser;
   }
 
-  findAll() {
+  findAll(): UserEntity[] {
     const users = this.userStorage.getAll();
-    return users.map((user) => omitObjectProps(user, 'password'));
+    return users;
   }
 
-  findOne(id: string) {
+  findOne(id: string): UserEntity {
     const user = this.userStorage.getById(id);
     if (!user) throw new NotFoundException(UserErrorMessages.NotFound);
-    return omitObjectProps(user, 'password');
+    return user;
   }
 
   updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
@@ -45,7 +48,7 @@ export class UserService {
     user.updatedAt = Date.now();
     user.version += 1;
 
-    return omitObjectProps(user, 'password');
+    return user;
   }
 
   remove(id: string) {

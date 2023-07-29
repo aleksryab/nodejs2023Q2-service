@@ -1,16 +1,23 @@
-import { IsUUID, IsAlphanumeric, IsNotEmpty } from 'class-validator';
+import { Exclude } from 'class-transformer';
+import { v4 as uuidv4 } from 'uuid';
+import { User } from '../user.interface';
 
-export class User {
-  @IsUUID(4)
-  id: string; // uuid v4
-
-  @IsAlphanumeric()
+export class UserEntity implements User {
+  id: string;
   login: string;
+  version: number;
+  createdAt: number;
+  updatedAt: number;
 
-  @IsNotEmpty()
+  @Exclude()
   password: string;
 
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
+  constructor(partial: Partial<UserEntity>) {
+    this.id = uuidv4();
+    Object.assign(this, partial);
+    this.version = 1;
+    const timestamp = Date.now();
+    this.createdAt = timestamp;
+    this.updatedAt = timestamp;
+  }
 }
