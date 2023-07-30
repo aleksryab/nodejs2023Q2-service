@@ -1,7 +1,8 @@
-import { BaseEntity } from '../../utils/BaseEntity';
-import { Track } from '../track.interface';
+import { BaseEntity } from '../../utils/base.entity';
+import { Track } from '../interfaces/track.interface';
 
 export class TrackEntity extends BaseEntity implements Track {
+  id: string;
   name: string;
   artistId: string | null = null;
   albumId: string | null = null;

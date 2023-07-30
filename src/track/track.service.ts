@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
 import { TrackStorage } from './storage/track.storage';
-import { NOT_FOUND_TRACK_MASSAGE } from './constants';
+import { EntityNotFoundError } from '../errors';
+import { EntitiesList } from '../utils/constants';
 
 @Injectable()
 export class TrackService {
@@ -21,7 +22,7 @@ export class TrackService {
 
   findOne(id: string) {
     const track = this.trackStorage.getById(id);
-    if (!track) throw new NotFoundException(NOT_FOUND_TRACK_MASSAGE);
+    if (!track) throw new EntityNotFoundError(EntitiesList.Track);
     return track;
   }
 

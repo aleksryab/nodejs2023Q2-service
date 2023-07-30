@@ -1,14 +1,9 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
-
+import { Injectable, ForbiddenException } from '@nestjs/common';
+import { EntityConflictError, EntityNotFoundError } from '../errors';
+import { EntitiesList } from '../utils/constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserStorage } from './storage/user.storage';
-import { UserErrorMessages } from './constants';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
@@ -17,7 +12,7 @@ export class UserService {
 
   create(createUserDto: CreateUserDto) {
     const existedUser = this.userStorage.getByLogin(createUserDto.login);
-    if (existedUser) throw new ConflictException(UserErrorMessages.LoginExists);
+    if (existedUser) throw new EntityConflictError(EntitiesList.User);
 
     const newUser = new UserEntity(createUserDto);
     this.userStorage.add(newUser);
@@ -32,17 +27,16 @@ export class UserService {
 
   findOne(id: string): UserEntity {
     const user = this.userStorage.getById(id);
-    if (!user) throw new NotFoundException(UserErrorMessages.NotFound);
+    if (!user) throw new EntityNotFoundError(EntitiesList.User);
     return user;
   }
 
   updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const { oldPassword, newPassword } = updatePasswordDto;
-    const user = this.userStorage.getById(id);
+    const user = this.findOne(id);
 
-    if (!user) throw new NotFoundException(UserErrorMessages.NotFound);
     if (user.password !== oldPassword)
-      throw new ForbiddenException(UserErrorMessages.WrongPassword);
+      throw new ForbiddenException('oldPassword is wrong');
 
     user.password = newPassword;
     user.updatedAt = Date.now();
@@ -53,7 +47,7 @@ export class UserService {
 
   remove(id: string) {
     const user = this.userStorage.getById(id);
-    if (!user) throw new NotFoundException(UserErrorMessages.NotFound);
+    if (!user) throw new EntityNotFoundError(EntitiesList.User);
     this.userStorage.delete(id);
   }
 }

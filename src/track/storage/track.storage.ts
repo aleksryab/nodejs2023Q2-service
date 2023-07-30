@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseStorage } from '../../utils/BaseStorage';
-import { Track } from '../track.interface';
+import { TrackEntity } from '../entities/track.entity';
 
 @Injectable()
-export class TrackStorage extends BaseStorage<Track> {}
+export class TrackStorage extends BaseStorage<TrackEntity> {}

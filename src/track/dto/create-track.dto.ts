@@ -5,7 +5,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { Track } from '../track.interface';
+import { Track } from '../interfaces/track.interface';
 
 export class CreateTrackDto implements Partial<Track> {
   @IsString()

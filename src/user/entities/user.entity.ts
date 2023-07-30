@@ -1,8 +1,8 @@
 import { Exclude } from 'class-transformer';
-import { v4 as uuidv4 } from 'uuid';
-import { User } from '../user.interface';
+import { BaseEntity } from '../../utils/base.entity';
+import { User } from '../interfaces/user.interface';
 
-export class UserEntity implements User {
+export class UserEntity extends BaseEntity implements User {
   id: string;
   login: string;
   version: number;
@@ -13,7 +13,7 @@ export class UserEntity implements User {
   password: string;
 
   constructor(partial: Partial<UserEntity>) {
-    this.id = uuidv4();
+    super();
     Object.assign(this, partial);
     this.version = 1;
     const timestamp = Date.now();
