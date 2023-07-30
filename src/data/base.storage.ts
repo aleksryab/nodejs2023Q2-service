@@ -25,6 +25,14 @@ export class BaseStorage<T extends StorageItem> {
     );
   }
 
+  getMany(where: Partial<T>) {
+    const keys = Object.keys(where);
+
+    return this.store.filter(
+      (item) => !keys.some((key) => item[key] !== where[key]),
+    );
+  }
+
   update(id: string, dto: Partial<T>): T | null {
     const item = this.getById(id);
     if (!item) return null;

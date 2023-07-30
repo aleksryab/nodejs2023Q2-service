@@ -9,11 +9,9 @@ import { TrackEntity } from './entities/track.entity';
 @Injectable()
 export class TrackService {
   constructor(private readonly dataService: DataService) {}
-  // constructor(private readonly trackStorage: TrackStorage) {}
 
   create(createTrackDto: CreateTrackDto) {
     const newTrack = new TrackEntity(createTrackDto);
-    // this.trackStorage.add(newTrack);
     this.dataService.tracks.add(newTrack);
     return newTrack;
   }
