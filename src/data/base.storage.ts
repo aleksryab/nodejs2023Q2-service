@@ -14,7 +14,15 @@ export class BaseStorage<T extends StorageItem> {
   }
 
   getById(id: string): T | undefined {
-    return this.store.find((user) => user.id === id);
+    return this.store.find((item) => item.id === id);
+  }
+
+  getOne(where: Partial<T>) {
+    const keys = Object.keys(where);
+
+    return this.store.find(
+      (item) => !keys.some((key) => item[key] !== where[key]),
+    );
   }
 
   update(id: string, dto: Partial<T>): T | null {
@@ -25,6 +33,6 @@ export class BaseStorage<T extends StorageItem> {
   }
 
   delete(id: string) {
-    this.store = this.store.filter((user) => user.id !== id);
+    this.store = this.store.filter((item) => item.id !== id);
   }
 }

@@ -1,27 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { EntityNotFoundError } from '../errors';
+import { EntitiesList } from '../utils/constants';
+import { DataService } from '../data/data.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
-import { TrackStorage } from './storage/track.storage';
-import { EntityNotFoundError } from '../errors';
-import { EntitiesList } from '../utils/constants';
 
 @Injectable()
 export class TrackService {
-  constructor(private readonly trackStorage: TrackStorage) {}
+  constructor(private readonly dataService: DataService) {}
+  // constructor(private readonly trackStorage: TrackStorage) {}
 
   create(createTrackDto: CreateTrackDto) {
     const newTrack = new TrackEntity(createTrackDto);
-    this.trackStorage.add(newTrack);
+    // this.trackStorage.add(newTrack);
+    this.dataService.tracks.add(newTrack);
     return newTrack;
   }
 
   findAll() {
-    return this.trackStorage.getAll();
+    return this.dataService.tracks.getAll();
   }
 
   findOne(id: string) {
-    const track = this.trackStorage.getById(id);
+    const track = this.dataService.tracks.getById(id);
     if (!track) throw new EntityNotFoundError(EntitiesList.Track);
     return track;
   }
@@ -34,6 +36,6 @@ export class TrackService {
 
   remove(id: string) {
     this.findOne(id);
-    this.trackStorage.delete(id);
+    this.dataService.tracks.delete(id);
   }
 }
