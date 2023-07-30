@@ -41,5 +41,7 @@ export class ArtistService {
 
     const albumsWithArtist = this.dataService.albums.getMany({ artistId: id });
     albumsWithArtist.forEach((track) => (track.artistId = null));
+
+    this.dataService.favorites.artists.delete(id);
   }
 }

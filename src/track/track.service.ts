@@ -35,5 +35,6 @@ export class TrackService {
   remove(id: string) {
     this.findOne(id);
     this.dataService.tracks.delete(id);
+    this.dataService.favorites.tracks.delete(id);
   }
 }

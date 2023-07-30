@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
+import { StatusCodes } from 'http-status-codes';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
@@ -44,7 +45,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.remove(id);
   }

@@ -38,5 +38,7 @@ export class AlbumService {
 
     const tracksWithAlbum = this.dataService.tracks.getMany({ albumId: id });
     tracksWithAlbum.forEach((track) => (track.albumId = null));
+
+    this.dataService.favorites.albums.delete(id);
   }
 }

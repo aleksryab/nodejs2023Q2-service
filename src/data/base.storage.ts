@@ -25,7 +25,12 @@ export class BaseStorage<T extends StorageItem> {
     );
   }
 
-  getMany(where: Partial<T>) {
+  getManyByIds(ids: string[]): T[] {
+    const idsSet = new Set(ids);
+    return this.store.filter((item) => idsSet.has(item.id));
+  }
+
+  getMany(where: Partial<T>): T[] {
     const keys = Object.keys(where);
 
     return this.store.filter(

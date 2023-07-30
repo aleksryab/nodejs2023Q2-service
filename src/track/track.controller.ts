@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   HttpCode,
 } from '@nestjs/common';
+import { StatusCodes } from 'http-status-codes';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -41,7 +42,7 @@ export class TrackController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.trackService.remove(id);
   }
