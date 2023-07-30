@@ -35,9 +35,11 @@ export class ArtistService {
   remove(id: string) {
     this.findOne(id);
     this.dataService.artists.delete(id);
-    console.log(this.dataService.tracks.getAll());
 
     const tracksWithArtist = this.dataService.tracks.getMany({ artistId: id });
     tracksWithArtist.forEach((track) => (track.artistId = null));
+
+    const albumsWithArtist = this.dataService.albums.getMany({ artistId: id });
+    albumsWithArtist.forEach((track) => (track.artistId = null));
   }
 }
