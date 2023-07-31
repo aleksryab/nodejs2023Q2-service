@@ -17,7 +17,7 @@ export class BaseStorage<T extends StorageItem> {
     return this.store.find((item) => item.id === id);
   }
 
-  getOne(where: Partial<T>) {
+  getOne(where: Partial<T>): T | undefined {
     const keys = Object.keys(where);
 
     return this.store.find(
@@ -45,7 +45,11 @@ export class BaseStorage<T extends StorageItem> {
     return item;
   }
 
-  delete(id: string) {
-    this.store = this.store.filter((item) => item.id !== id);
+  delete(id: string): boolean {
+    const index = this.store.findIndex((item) => item.id === id);
+    if (index === -1) return false;
+
+    this.store.splice(index, 1);
+    return true;
   }
 }

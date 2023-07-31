@@ -27,14 +27,14 @@ export class AlbumService {
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const album = this.findOne(id);
-    Object.assign(album, updateAlbumDto);
-    return album;
+    const updatedAlbum = this.dataService.albums.update(id, updateAlbumDto);
+    if (!updatedAlbum) throw new EntityNotFoundError(EntitiesList.Album);
+    return updatedAlbum;
   }
 
   remove(id: string) {
-    this.findOne(id);
-    this.dataService.albums.delete(id);
+    const result = this.dataService.albums.delete(id);
+    if (!result) throw new EntityNotFoundError(EntitiesList.Album);
 
     const tracksWithAlbum = this.dataService.tracks.getMany({ albumId: id });
     tracksWithAlbum.forEach((track) => (track.albumId = null));

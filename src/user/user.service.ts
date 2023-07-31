@@ -5,6 +5,7 @@ import { EntitiesList } from '../utils/constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserEntity } from './entities/user.entity';
+import { UpdateUserPassword } from './interfaces/user.interface';
 
 @Injectable()
 export class UserService {
@@ -23,8 +24,7 @@ export class UserService {
   }
 
   findAll(): UserEntity[] {
-    const users = this.dataService.users.getAll();
-    return users;
+    return this.dataService.users.getAll();
   }
 
   findOne(id: string): UserEntity {
@@ -40,16 +40,17 @@ export class UserService {
     if (user.password !== oldPassword)
       throw new ForbiddenException('oldPassword is wrong');
 
-    user.password = newPassword;
-    user.updatedAt = Date.now();
-    user.version += 1;
+    const updateUserDto: UpdateUserPassword = {
+      password: newPassword,
+      version: user.version + 1,
+      updatedAt: Date.now(),
+    };
 
-    return user;
+    return this.dataService.users.update(id, updateUserDto);
   }
 
   remove(id: string) {
-    const user = this.dataService.users.getById(id);
-    if (!user) throw new EntityNotFoundError(EntitiesList.User);
-    this.dataService.users.delete(id);
+    const result = this.dataService.users.delete(id);
+    if (!result) throw new EntityNotFoundError(EntitiesList.User);
   }
 }

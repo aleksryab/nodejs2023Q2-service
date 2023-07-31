@@ -27,14 +27,14 @@ export class TrackService {
   }
 
   update(id: string, updateTrackDto: UpdateTrackDto) {
-    const track = this.findOne(id);
-    Object.assign(track, updateTrackDto);
-    return track;
+    const updatedTrack = this.dataService.tracks.update(id, updateTrackDto);
+    if (!updatedTrack) throw new EntityNotFoundError(EntitiesList.Track);
+    return updatedTrack;
   }
 
   remove(id: string) {
-    this.findOne(id);
-    this.dataService.tracks.delete(id);
+    const result = this.dataService.tracks.delete(id);
+    if (!result) throw new EntityNotFoundError(EntitiesList.Track);
     this.dataService.favorites.tracks.delete(id);
   }
 }
