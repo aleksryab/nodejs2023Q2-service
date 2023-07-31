@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from '../../utils/base.entity';
 import { User } from '../interfaces/user.interface';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 export class UserEntity extends BaseEntity implements User {
   id: string;
@@ -12,9 +13,9 @@ export class UserEntity extends BaseEntity implements User {
   @Exclude()
   password: string;
 
-  constructor(partial: Partial<UserEntity>) {
+  constructor(createUserDto: CreateUserDto) {
     super();
-    Object.assign(this, partial);
+    Object.assign(this, createUserDto);
     this.version = 1;
     const timestamp = Date.now();
     this.createdAt = timestamp;

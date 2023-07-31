@@ -1,4 +1,5 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { EntityConflictError, EntityNotFoundError } from '../errors';
 import { DataService } from '../data/data.service';
 import { EntitiesList } from '../utils/constants';
@@ -7,17 +8,24 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserEntity } from './entities/user.entity';
 import { UpdateUserPassword } from './interfaces/user.interface';
 
+const SALT_ROUNDS = Number(process.env.CRYPT_SALT) || 10;
+
 @Injectable()
 export class UserService {
   constructor(private readonly dataService: DataService) {}
 
-  create(createUserDto: CreateUserDto) {
-    const existedUser = this.dataService.users.getOne({
-      login: createUserDto.login,
-    });
+  async create(createUserDto: CreateUserDto) {
+    const { login, password } = createUserDto;
+
+    const existedUser = this.dataService.users.getOne({ login });
     if (existedUser) throw new EntityConflictError(EntitiesList.User);
 
-    const newUser = new UserEntity(createUserDto);
+    const newUserData = {
+      login,
+      password: await bcrypt.hash(password, SALT_ROUNDS),
+    };
+
+    const newUser = new UserEntity(newUserData);
     this.dataService.users.add(newUser);
 
     return newUser;
@@ -33,15 +41,15 @@ export class UserService {
     return user;
   }
 
-  updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
+  async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const { oldPassword, newPassword } = updatePasswordDto;
     const user = this.findOne(id);
 
-    if (user.password !== oldPassword)
-      throw new ForbiddenException('oldPassword is wrong');
+    const match = await bcrypt.compare(oldPassword, user.password);
+    if (!match) throw new ForbiddenException('oldPassword is wrong');
 
     const updateUserDto: UpdateUserPassword = {
-      password: newPassword,
+      password: await bcrypt.hash(newPassword, SALT_ROUNDS),
       version: user.version + 1,
       updatedAt: Date.now(),
     };
