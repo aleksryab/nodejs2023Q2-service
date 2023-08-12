@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   app:
@@ -24,9 +24,10 @@ services:
       - hls-network
     volumes:
       - dbdata:/var/lib/postgresql/data
+      - dblogs:/var/log/postgresql
     env_file: .env
     ports:
-      - ${DB_PORT}:${POSTGRES_PORT}
+      - ${DB_PORT}:${DB_PORT}
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
@@ -38,3 +39,4 @@ networks:
     driver: bridge
 volumes:
   dbdata:
+  dblogs:

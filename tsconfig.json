@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false
   },
   "watchOptions": {
-    "watchFile": "priorityPollingInterval",
+    "watchFile": "dynamicPriorityPolling",
     "watchDirectory": "dynamicprioritypolling",
     "fallbackPolling": "dynamicPriority",
     "synchronousWatchDirectory": true,
