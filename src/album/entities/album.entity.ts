@@ -1,14 +1,27 @@
-import { BaseEntity } from '../../utils/base.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { ArtistEntity } from '../../artist/entities/artist.entity';
 import { Album } from '../interfaces/album.interface';
 
-export class AlbumEntity extends BaseEntity implements Album {
+@Entity('album')
+export class AlbumEntity implements Album {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
   name: string;
+
+  @Column()
   year: number;
-  artistId: string;
+
+  @Column({ type: 'uuid', nullable: true, default: null })
+  artistId: string | null;
+
+  @ManyToOne(() => ArtistEntity, (artist) => artist.id, {
+    onDelete: 'SET NULL',
+  })
+  artist: ArtistEntity;
 
   constructor(partial: Partial<AlbumEntity>) {
-    super();
     Object.assign(this, partial);
   }
 }

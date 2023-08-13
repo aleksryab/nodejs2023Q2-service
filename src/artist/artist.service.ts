@@ -40,11 +40,5 @@ export class ArtistService {
     if (result.affected === 0) {
       throw new EntityNotFoundError(EntitiesList.Artist);
     }
-
-    // const tracksWithArtist = this.dataService.tracks.getMany({ artistId: id });
-    // tracksWithArtist.forEach((track) => (track.artistId = null));
-
-    // const albumsWithArtist = this.dataService.albums.getMany({ artistId: id });
-    // albumsWithArtist.forEach((track) => (track.artistId = null));
   }
 }

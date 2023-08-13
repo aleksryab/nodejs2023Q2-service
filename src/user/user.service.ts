@@ -43,13 +43,8 @@ export class UserService {
   }
 
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
-    console.log(id);
-    console.log(await this.userRepository.findOne({ where: { id } }));
-
     const { oldPassword, newPassword } = updatePasswordDto;
     const user = await this.findOne(id);
-
-    console.log('USER: ', user);
 
     const match = await bcrypt.compare(oldPassword, user.password);
     if (!match) throw new ForbiddenException('Old password is wrong');

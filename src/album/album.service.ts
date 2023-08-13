@@ -1,44 +1,44 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { AlbumEntity } from './entities/album.entity';
-import { DataService } from '../data/data.service';
 import { EntityNotFoundError } from '../errors';
 import { EntitiesList } from '../utils/constants';
 
 @Injectable()
 export class AlbumService {
-  constructor(private readonly dataService: DataService) {}
+  constructor(
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
+  ) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
+  async create(createAlbumDto: CreateAlbumDto) {
     const newAlbum = new AlbumEntity(createAlbumDto);
-    this.dataService.albums.add(newAlbum);
-    return newAlbum;
+    return await this.albumRepository.save(newAlbum);
   }
 
-  findAll() {
-    return this.dataService.albums.getAll();
+  async findAll() {
+    return await this.albumRepository.find();
   }
 
-  findOne(id: string) {
-    const album = this.dataService.albums.getById(id);
+  async findOne(id: string) {
+    const album = await this.albumRepository.findOne({ where: { id } });
     if (!album) throw new EntityNotFoundError(EntitiesList.Album);
     return album;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const updatedAlbum = this.dataService.albums.update(id, updateAlbumDto);
-    if (!updatedAlbum) throw new EntityNotFoundError(EntitiesList.Album);
-    return updatedAlbum;
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    const album = await this.findOne(id);
+    const updatedAlbum = { ...album, ...updateAlbumDto };
+    return await this.albumRepository.save(updatedAlbum);
   }
 
-  remove(id: string) {
-    const result = this.dataService.albums.delete(id);
-    if (!result) throw new EntityNotFoundError(EntitiesList.Album);
-
-    const tracksWithAlbum = this.dataService.tracks.getMany({ albumId: id });
-    tracksWithAlbum.forEach((track) => (track.albumId = null));
-
-    this.dataService.favorites.albums.delete(id);
+  async remove(id: string) {
+    const result = await this.albumRepository.delete(id);
+    if (result.affected === 0) {
+      throw new EntityNotFoundError(EntitiesList.Album);
+    }
   }
 }
