@@ -14,7 +14,7 @@ async function bootstrap() {
   const apiDoc = await getApiDoc();
   SwaggerModule.setup('doc', app, apiDoc);
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new ErrorsInterceptor());
 
   await app.listen(PORT, () => startServerMessage(PORT));

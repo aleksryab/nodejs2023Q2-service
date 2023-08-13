@@ -29,10 +29,10 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     environment:
-      - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-    command: postgres -c logging_collector=on -c log_filename=postgres.log
+      - POSTGRES_DB=${DB_NAME}
+    command: postgres -c logging_collector=on -c log_statement=all
 
 networks:
   hls-network:
