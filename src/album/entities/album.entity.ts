@@ -13,7 +13,7 @@ export class AlbumEntity implements Album {
   @Column()
   year: number;
 
-  @Column({ type: 'uuid', nullable: true, default: null })
+  @Column({ type: 'uuid', nullable: true })
   artistId: string | null;
 
   @ManyToOne(() => ArtistEntity, (artist) => artist.id, {

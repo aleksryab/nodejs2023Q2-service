@@ -1,40 +1,44 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { EntityNotFoundError } from '../errors';
 import { EntitiesList } from '../utils/constants';
-import { DataService } from '../data/data.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
 
 @Injectable()
 export class TrackService {
-  constructor(private readonly dataService: DataService) {}
+  constructor(
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>,
+  ) {}
 
-  create(createTrackDto: CreateTrackDto) {
+  async create(createTrackDto: CreateTrackDto) {
     const newTrack = new TrackEntity(createTrackDto);
-    this.dataService.tracks.add(newTrack);
-    return newTrack;
+    return await this.trackRepository.save(newTrack);
   }
 
-  findAll() {
-    return this.dataService.tracks.getAll();
+  async findAll() {
+    return await this.trackRepository.find();
   }
 
-  findOne(id: string) {
-    const track = this.dataService.tracks.getById(id);
+  async findOne(id: string) {
+    const track = await this.trackRepository.findOne({ where: { id } });
     if (!track) throw new EntityNotFoundError(EntitiesList.Track);
     return track;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    const updatedTrack = this.dataService.tracks.update(id, updateTrackDto);
-    if (!updatedTrack) throw new EntityNotFoundError(EntitiesList.Track);
-    return updatedTrack;
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const track = await this.findOne(id);
+    const updatedTrack = { ...track, ...updateTrackDto };
+    return await this.trackRepository.save(updatedTrack);
   }
 
-  remove(id: string) {
-    const result = this.dataService.tracks.delete(id);
-    if (!result) throw new EntityNotFoundError(EntitiesList.Track);
-    this.dataService.favorites.tracks.delete(id);
+  async remove(id: string) {
+    const result = await this.trackRepository.delete(id);
+    if (result.affected === 0) {
+      throw new EntityNotFoundError(EntitiesList.Track);
+    }
   }
 }
