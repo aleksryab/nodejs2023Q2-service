@@ -25,15 +25,15 @@ export class FavoritesController {
   }
 
   @Post('/artist/:id')
-  addArtist(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.addArtist(id);
+  async addArtist(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.addArtist(id);
     if (result) return { message: 'Artist added to favorites' };
   }
 
   @Delete('/artist/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  removeArtist(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.removeArtist(id);
+  async removeArtist(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.removeArtist(id);
     if (result) return { message: 'Artist deleted from favorites' };
   }
 
@@ -43,15 +43,15 @@ export class FavoritesController {
   }
 
   @Post('/track/:id')
-  addTrack(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.addTrack(id);
+  async addTrack(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.addTrack(id);
     if (result) return { message: 'Track added to favorites' };
   }
 
   @Delete('/track/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  removeTrack(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.removeTrack(id);
+  async removeTrack(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.removeTrack(id);
     if (result) return { message: 'Track deleted from favorites' };
   }
 
@@ -61,15 +61,15 @@ export class FavoritesController {
   }
 
   @Post('/album/:id')
-  addAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.addAlbum(id);
+  async addAlbum(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.addAlbum(id);
     if (result) return { message: 'Album added to favorites' };
   }
 
   @Delete('/album/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  removeAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.removeAlbum(id);
+  async removeAlbum(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.removeAlbum(id);
     if (result) return { message: 'Album deleted from favorites' };
   }
 }

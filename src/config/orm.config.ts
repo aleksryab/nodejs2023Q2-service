@@ -4,6 +4,9 @@ import { UserEntity } from '../user/entities/user.entity';
 import { ArtistEntity } from '../artist/entities/artist.entity';
 import { AlbumEntity } from '../album/entities/album.entity';
 import { TrackEntity } from '../track/entities/track.entity';
+import { FavArtistEntity } from '../favorites/entities/favArtist.entity';
+import { FavAlbumEntity } from '../favorites/entities/favAlbum.entity';
+import { FavTrackEntity } from '../favorites/entities/favTrack.entity';
 
 export const ormConfig: DataSourceOptions = {
   type: 'postgres',
@@ -14,7 +17,15 @@ export const ormConfig: DataSourceOptions = {
   database: process.env.DB_NAME,
 
   synchronize: true,
-  entities: [UserEntity, ArtistEntity, AlbumEntity, TrackEntity],
+  entities: [
+    UserEntity,
+    ArtistEntity,
+    AlbumEntity,
+    TrackEntity,
+    FavArtistEntity,
+    FavAlbumEntity,
+    FavTrackEntity,
+  ],
   migrations: ['src/database/migrations/*.ts'],
   migrationsRun: true,
 };
