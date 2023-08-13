@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DataService } from '../data/data.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { EntitiesList } from '../utils/constants';
 import { EntityNotFoundError } from '../errors';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -8,40 +9,42 @@ import { ArtistEntity } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistService {
-  constructor(private readonly dataService: DataService) {}
+  constructor(
+    @InjectRepository(ArtistEntity)
+    private readonly artistRepository: Repository<ArtistEntity>,
+  ) {}
 
-  create(createArtistDto: CreateArtistDto) {
+  async create(createArtistDto: CreateArtistDto) {
     const newArtist = new ArtistEntity(createArtistDto);
-    this.dataService.artists.add(newArtist);
-    return newArtist;
+    return await this.artistRepository.save(newArtist);
   }
 
-  findAll() {
-    return this.dataService.artists.getAll();
+  async findAll() {
+    return await this.artistRepository.find();
   }
 
-  findOne(id: string) {
-    const artist = this.dataService.artists.getById(id);
+  async findOne(id: string) {
+    const artist = await this.artistRepository.findOne({ where: { id } });
     if (!artist) throw new EntityNotFoundError(EntitiesList.Artist);
     return artist;
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto) {
-    const upDatedArtist = this.dataService.artists.update(id, updateArtistDto);
-    if (!upDatedArtist) throw new EntityNotFoundError(EntitiesList.Artist);
-    return upDatedArtist;
+  async update(id: string, updateArtistDto: UpdateArtistDto) {
+    const artist = await this.findOne(id);
+    const updatedArtist = { ...artist, ...updateArtistDto };
+    return await this.artistRepository.save(updatedArtist);
   }
 
-  remove(id: string) {
-    const result = this.dataService.artists.delete(id);
-    if (!result) throw new EntityNotFoundError(EntitiesList.Artist);
+  async remove(id: string) {
+    const result = await this.artistRepository.delete(id);
+    if (result.affected === 0) {
+      throw new EntityNotFoundError(EntitiesList.Artist);
+    }
 
-    const tracksWithArtist = this.dataService.tracks.getMany({ artistId: id });
-    tracksWithArtist.forEach((track) => (track.artistId = null));
+    // const tracksWithArtist = this.dataService.tracks.getMany({ artistId: id });
+    // tracksWithArtist.forEach((track) => (track.artistId = null));
 
-    const albumsWithArtist = this.dataService.albums.getMany({ artistId: id });
-    albumsWithArtist.forEach((track) => (track.artistId = null));
-
-    this.dataService.favorites.artists.delete(id);
+    // const albumsWithArtist = this.dataService.albums.getMany({ artistId: id });
+    // albumsWithArtist.forEach((track) => (track.artistId = null));
   }
 }

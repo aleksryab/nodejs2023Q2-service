@@ -1,13 +1,18 @@
-import { BaseEntity } from '../../utils/base.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Artist } from '../interfaces/artist.interface';
 
-export class ArtistEntity extends BaseEntity implements Artist {
+@Entity('artist')
+export class ArtistEntity implements Artist {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
   name: string;
+
+  @Column()
   grammy: boolean;
 
   constructor(partial: Partial<ArtistEntity>) {
-    super();
     Object.assign(this, partial);
   }
 }
