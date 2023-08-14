@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "compose": "docker-compose up",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -18,7 +19,11 @@
     "test:auth": "cross-env TEST_MODE=auth jest --config ./test/jest-e2e.json --noStackTrace --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:docker": "docker exec -it hls-app npm run test",
+    "scan": "npm run scan:app & npm run scan:db",
+    "scan:app": "docker scout cves home-library-app",
+    "scan:db": "docker scout cves postgres:alpine"
   },
   "dependencies": {
     "@nestjs/common": "^10.1.2",
