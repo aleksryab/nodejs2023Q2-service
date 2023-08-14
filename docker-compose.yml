@@ -24,7 +24,7 @@ services:
       - hls-network
     volumes:
       - dbdata:/var/lib/postgresql/data
-      - dblogs:/var/log/postgresql
+      - dblogs:/var/lib/postgresql/data/log
     env_file: .env
     ports:
       - ${DB_PORT}:${DB_PORT}
