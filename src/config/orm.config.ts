@@ -16,7 +16,7 @@ export const ormConfig: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 
-  synchronize: true,
+  synchronize: false,
   entities: [
     UserEntity,
     ArtistEntity,
@@ -26,6 +26,6 @@ export const ormConfig: DataSourceOptions = {
     FavAlbumEntity,
     FavTrackEntity,
   ],
-  migrations: ['src/database/migrations/*.ts'],
   migrationsRun: true,
+  migrations: ['dist/database/migrations/*.js'],
 };

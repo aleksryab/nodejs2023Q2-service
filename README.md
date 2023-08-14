@@ -23,7 +23,7 @@
 3. Switch to develop branch:
 
    ```bash
-   git checkout docker
+   git checkout docker-database
    ```
 
 4. Install NPM modules (if you want to run tests locally):
@@ -61,7 +61,7 @@ After application running open new terminal and enter:
   npm run test -- <path to suite>
   ```
 
-- To run all tests without authorization from the docker container
+- To run all tests without authorization in the docker container
   ```bash
   npm run test:docker
   ```

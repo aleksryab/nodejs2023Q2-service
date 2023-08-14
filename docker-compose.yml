@@ -24,7 +24,6 @@ services:
       - hls-network
     volumes:
       - dbdata:/var/lib/postgresql/data
-      - dblogs:/var/lib/postgresql/data/log
     env_file: .env
     ports:
       - ${DB_PORT}:${DB_PORT}
@@ -39,4 +38,3 @@ networks:
     driver: bridge
 volumes:
   dbdata:
-  dblogs:
