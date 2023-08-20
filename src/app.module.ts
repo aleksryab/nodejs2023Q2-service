@@ -8,9 +8,11 @@ import { ArtistModule } from './api/artist/artist.module';
 import { AlbumModule } from './api/album/album.module';
 import { TrackModule } from './api/track/track.module';
 import { FavoritesModule } from './api/favorites/favorites.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     ArtistModule,
     AlbumModule,
