@@ -11,9 +11,9 @@ import { LoginDto } from './dto/login.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private userService: UserService,
     private cryptoService: CryptoService,
     private jwtService: JwtService,
   ) {}
@@ -33,6 +33,6 @@ export class AuthService {
 
     const payload = { userId: user.id, login: user.login };
 
-    return { access_token: await this.jwtService.signAsync(payload) };
+    return { accessToken: await this.jwtService.signAsync(payload) };
   }
 }
