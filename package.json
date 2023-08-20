@@ -24,9 +24,10 @@
     "scan": "npm run scan:app & npm run scan:db",
     "scan:app": "docker scout cves home-library-app",
     "scan:db": "docker scout cves postgres:alpine",
-    "build:docker": "docker exec -it hls-app npm run build",
-    "migration:generate": "docker exec -it hls-app npx typeorm-ts-node-esm -d ./src/config/migration.config.ts migration:generate ./src/database/migrations/update",
-    "migration:run": "npm run build:docker & docker exec -it hls-app npx typeorm-ts-node-esm migration:run -d ./src/config/migration.config.ts"
+    "typeorm": "typeorm-ts-node-esm -d ./src/config/migration.config.ts",
+    "migration:generate": "npm run typeorm migration:generate src/database/migrations/update",
+    "migration:run": "npm run build && npm run typeorm migration:run",
+    "migration:revert": "npm run typeorm migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^10.1.2",
