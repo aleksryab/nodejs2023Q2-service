@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from './public.decorator';
 
-Injectable();
+@Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
@@ -29,11 +29,11 @@ export class AuthGuard implements CanActivate {
     if (!token) throw new UnauthorizedException('Authorization required');
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET_KEY,
       });
 
-      request['user'] = payload;
+      request.body['user'] = 'user';
     } catch {
       throw new UnauthorizedException('Authorization required');
     }

@@ -7,6 +7,7 @@ import { CreateUserDto } from '../api/user/dto/create-user.dto';
 import { UserService } from '../api/user/user.service';
 import { UserEntity } from '../api/user/entities/user.entity';
 import { LoginDto } from './dto/login.dto';
+import { TokenPayload } from './interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -31,8 +32,27 @@ export class AuthService {
     const match = await this.cryptoService.compare(password, user.password);
     if (!match) throw new ForbiddenException('Password does not match');
 
-    const payload = { userId: user.id, login: user.login };
+    const payload: TokenPayload = { userId: user.id, login: user.login };
+    return await this.generateTokens(payload);
+  }
 
-    return { accessToken: await this.jwtService.signAsync(payload) };
+  async refresh(payload: TokenPayload) {
+    return await this.generateTokens(payload);
+  }
+
+  private async generateTokens(payload: TokenPayload) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET_KEY,
+        expiresIn: process.env.TOKEN_EXPIRE_TIME,
+      }),
+
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+      }),
+    ]);
+
+    return { accessToken, refreshToken };
   }
 }
