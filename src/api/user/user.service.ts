@@ -1,20 +1,19 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { EntityConflictError, EntityNotFoundError } from '../errors';
-import { EntitiesList } from '../utils/constants';
+import { EntityConflictError, EntityNotFoundError } from '../../errors';
+import { EntitiesList } from '../../utils/constants';
+import { CryptoService } from '../../utils/crypto.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserEntity } from './entities/user.entity';
-
-const SALT_ROUNDS = Number(process.env.CRYPT_SALT) || 10;
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -25,7 +24,7 @@ export class UserService {
 
     const newUserData = {
       login,
-      password: await bcrypt.hash(password, SALT_ROUNDS),
+      password: await this.cryptoService.getHash(password),
     };
 
     const newUser = new UserEntity(newUserData);
@@ -42,14 +41,18 @@ export class UserService {
     return user;
   }
 
+  async findByLogin(login: string) {
+    return await this.userRepository.findOne({ where: { login } });
+  }
+
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const { oldPassword, newPassword } = updatePasswordDto;
     const user = await this.findOne(id);
 
-    const match = await bcrypt.compare(oldPassword, user.password);
+    const match = await this.cryptoService.compare(oldPassword, user.password);
     if (!match) throw new ForbiddenException('Old password is wrong');
 
-    user.password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    user.password = await this.cryptoService.getHash(newPassword);
     return await this.userRepository.save(user);
   }
 

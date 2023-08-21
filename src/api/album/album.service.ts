@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EntityNotFoundError } from '../../errors';
+import { EntitiesList } from '../../utils/constants';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { AlbumEntity } from './entities/album.entity';
-import { EntityNotFoundError } from '../errors';
-import { EntitiesList } from '../utils/constants';
 
 @Injectable()
 export class AlbumService {

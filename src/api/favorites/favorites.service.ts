@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EntityNotFoundError, EntityUnprocessableError } from '../errors';
-import { EntitiesList } from '../utils/constants';
+import { EntityNotFoundError, EntityUnprocessableError } from '../../errors';
+import { EntitiesList } from '../../utils/constants';
 import { FavArtistEntity } from './entities/favArtist.entity';
 import { ArtistEntity } from '../artist/entities/artist.entity';
 import { AlbumEntity } from '../album/entities/album.entity';

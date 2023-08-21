@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EntityNotFoundError } from '../errors';
-import { EntitiesList } from '../utils/constants';
+import { EntityNotFoundError } from '../../errors';
+import { EntitiesList } from '../../utils/constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';

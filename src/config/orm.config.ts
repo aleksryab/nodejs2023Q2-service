@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import { DataSourceOptions } from 'typeorm';
-import { UserEntity } from '../user/entities/user.entity';
-import { ArtistEntity } from '../artist/entities/artist.entity';
-import { AlbumEntity } from '../album/entities/album.entity';
-import { TrackEntity } from '../track/entities/track.entity';
-import { FavArtistEntity } from '../favorites/entities/favArtist.entity';
-import { FavAlbumEntity } from '../favorites/entities/favAlbum.entity';
-import { FavTrackEntity } from '../favorites/entities/favTrack.entity';
+import { UserEntity } from '../api/user/entities/user.entity';
+import { ArtistEntity } from '../api/artist/entities/artist.entity';
+import { AlbumEntity } from '../api/album/entities/album.entity';
+import { TrackEntity } from '../api/track/entities/track.entity';
+import { FavArtistEntity } from '../api/favorites/entities/favArtist.entity';
+import { FavAlbumEntity } from '../api/favorites/entities/favAlbum.entity';
+import { FavTrackEntity } from '../api/favorites/entities/favTrack.entity';
 
 export const ormConfig: DataSourceOptions = {
   type: 'postgres',
@@ -16,7 +16,6 @@ export const ormConfig: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 
-  synchronize: false,
   entities: [
     UserEntity,
     ArtistEntity,
@@ -26,6 +25,7 @@ export const ormConfig: DataSourceOptions = {
     FavAlbumEntity,
     FavTrackEntity,
   ],
+  synchronize: false,
   migrationsRun: true,
-  migrations: ['dist/database/migrations/*.js'],
+  migrations: [`dist/database/migrations/*{.ts,.js}`],
 };

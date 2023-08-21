@@ -3,18 +3,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ormConfig } from './config/orm.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { TrackModule } from './track/track.module';
-import { ArtistModule } from './artist/artist.module';
-import { AlbumModule } from './album/album.module';
-import { FavoritesModule } from './favorites/favorites.module';
+import { UserModule } from './api/user/user.module';
+import { ArtistModule } from './api/artist/artist.module';
+import { AlbumModule } from './api/album/album.module';
+import { TrackModule } from './api/track/track.module';
+import { FavoritesModule } from './api/favorites/favorites.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
-    TrackModule,
     ArtistModule,
     AlbumModule,
+    TrackModule,
     FavoritesModule,
     TypeOrmModule.forRoot(ormConfig),
   ],
