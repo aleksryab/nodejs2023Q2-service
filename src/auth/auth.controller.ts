@@ -31,7 +31,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   signIn(@Body() loginDto: LoginDto) {
-    console.log(loginDto);
     return this.authService.signIn(loginDto);
   }
 
@@ -40,7 +39,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/refresh')
   refresh(@Body() refreshDto: RefreshDto) {
-    console.log(refreshDto);
     return this.authService.refresh(refreshDto.tokenPayload);
   }
 }
