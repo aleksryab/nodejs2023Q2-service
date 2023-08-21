@@ -1,19 +1,14 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
 import { CryptoService } from '../utils/crypto.service';
 import { CreateUserDto } from '../api/user/dto/create-user.dto';
 import { UserService } from '../api/user/user.service';
-import { UserEntity } from '../api/user/entities/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { TokenPayload } from './interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
     private userService: UserService,
     private cryptoService: CryptoService,
     private jwtService: JwtService,
@@ -26,7 +21,7 @@ export class AuthService {
   async signIn(loginDto: LoginDto) {
     const { login, password } = loginDto;
 
-    const user = await this.userRepository.findOne({ where: { login } });
+    const user = await this.userService.findByLogin(login);
     if (!user) throw new ForbiddenException('No user with such login');
 
     const match = await this.cryptoService.compare(password, user.password);
