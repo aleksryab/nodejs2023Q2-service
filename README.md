@@ -23,10 +23,10 @@
 3. Switch to develop branch:
 
    ```bash
-   git checkout docker-database
+   git checkout log-auth
    ```
 
-4. Install NPM modules (if you want to run tests locally):
+4. Install NPM modules:
 
    ```bash
    npm install
@@ -34,11 +34,11 @@
 
 ## Running application
 
-1. Rename file `.env.example` to `.env`
+1. Create `.env` file using `.env.example` as reference.
 2. Build images and run containers:
 
    ```bash
-   npm run compose
+   npm run docker:up
    ```
 
 After starting the app on port (4000 as default) you can open
@@ -49,21 +49,15 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 After application running open new terminal and enter:
 
-- To run all tests without authorization locally
+- To run all tests with authorization locally
 
   ```bash
-  npm run test
+  npm run test:auth
   ```
 
-- To run only one of all test suites
-
+- To run all tests with authorization in the docker container
   ```bash
-  npm run test -- <path to suite>
-  ```
-
-- To run all tests without authorization in the docker container
-  ```bash
-  npm run test:docker
+  npm run docker:test:auth
   ```
 
 ## Vulnerabilities scanning
